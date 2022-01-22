@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+
 import '../audio.dart';
 
 class MenuScreen extends StatefulWidget {
   @override
   _MenuScreenState createState() => _MenuScreenState();
 
-  bool soundOn;
-  MenuScreen(this.soundOn) {}
+  final bool soundOn;
+
+  MenuScreen(this.soundOn);
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  late bool soundOn;
+
+  @override
+  void initState() {
+    soundOn = widget.soundOn;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Audio.play(Song.MENU);
@@ -95,15 +105,13 @@ class _MenuScreenState extends State<MenuScreen> {
                     ),
                     FlatButton(
                       child: Image.asset(
-                        widget.soundOn
-                            ? 'assets/images/volume_on.png'
-                            : 'assets/images/volume_off.png',
-                        height: widget.soundOn ? 15 : 19,
+                        soundOn ? 'assets/images/volume_on.png' : 'assets/images/volume_off.png',
+                        height: soundOn ? 15 : 19,
                         fit: BoxFit.contain,
                       ),
                       onPressed: () => {
                         setState(() {
-                          widget.soundOn = !widget.soundOn;
+                          soundOn = !soundOn;
                           Audio.flipMusicOnOff();
                         })
                       },

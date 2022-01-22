@@ -42,9 +42,9 @@ class PieceSelector extends DeviceModuleBase {
 
   @override
   void render(Canvas canvas) {
-    var width = hackingDevice.gameWidth! * 0.111;
+    var width = hackingDevice.gameWidth * 0.111;
     var height = hackingDevice.gameHeight * 0.558;
-    var offsetX = hackingDevice.gameWidth! * 0.846;
+    var offsetX = hackingDevice.gameWidth * 0.846;
     var offsetY = hackingDevice.gameHeight * 0.296;
     area = Rect.fromLTWH(offsetX, offsetY, width, height);
     sprite.renderRect(canvas, area!);

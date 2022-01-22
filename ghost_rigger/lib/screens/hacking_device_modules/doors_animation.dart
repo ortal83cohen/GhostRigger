@@ -26,14 +26,14 @@ class DoorsAnimation extends DeviceModuleBase {
   void render(Canvas canvas) {
     if (renderRight) {
       var rightDoorWidth = hackingDevice.screenSize.height * 1.255;
-      var rightDoorOffsetX = 0.503 * hackingDevice.gameWidth! + offsetRightDoor;
+      var rightDoorOffsetX = 0.503 * hackingDevice.gameWidth + offsetRightDoor;
       var rightDoorRect = Rect.fromLTWH(rightDoorOffsetX, 0, rightDoorWidth, hackingDevice.screenSize.height);
       rightDoorSprite.renderRect(canvas, rightDoorRect);
     }
 
     if (renderLeft) {
       var leftDoorWidth = hackingDevice.gameHeight * 1.278;
-      var leftDoorOffsetX = 0.522 * hackingDevice.gameWidth! - leftDoorWidth + offsetLeftDoor;
+      var leftDoorOffsetX = 0.522 * hackingDevice.gameWidth - leftDoorWidth + offsetLeftDoor;
       var leftDoorRect = Rect.fromLTWH(leftDoorOffsetX, 0, leftDoorWidth, hackingDevice.gameHeight);
       leftDoorSprite.renderRect(canvas, leftDoorRect);
     }
@@ -44,7 +44,7 @@ class DoorsAnimation extends DeviceModuleBase {
   void update(double t) {
     if (renderLeft) {
       offsetLeftDoor -= t * 600;
-      var minOffsetLeftDoor = -((hackingDevice.gameWidth ?? 0) * 0.488);
+      var minOffsetLeftDoor = -((hackingDevice.gameWidth) * 0.488);
       if (offsetLeftDoor < minOffsetLeftDoor) {
         offsetLeftDoor = minOffsetLeftDoor;
         renderLeft = false;
@@ -53,7 +53,7 @@ class DoorsAnimation extends DeviceModuleBase {
 
     if (renderRight) {
       offsetRightDoor += t * 600;
-      var maxOffsetLeftDoor = (hackingDevice.gameWidth ?? 0) * 0.471;
+      var maxOffsetLeftDoor = (hackingDevice.gameWidth) * 0.471;
       if (offsetRightDoor > maxOffsetLeftDoor) {
         offsetRightDoor = maxOffsetLeftDoor;
         renderRight = false;

@@ -27,9 +27,9 @@ class LightAnimation extends DeviceModuleBase {
 
   @override
   void render(Canvas canvas) {
-    var width = hackingDevice.gameWidth! * 0.089;
+    var width = hackingDevice.gameWidth * 0.089;
     var height = hackingDevice.gameHeight * 0.415;
-    var offsetX = hackingDevice.gameWidth! * 0.043;
+    var offsetX = hackingDevice.gameWidth * 0.043;
     var offsetY = hackingDevice.gameHeight * 0.585;
     area = Rect.fromLTWH(offsetX, offsetY, width, height);
     sprites[animationIndex].renderRect(canvas, area!);

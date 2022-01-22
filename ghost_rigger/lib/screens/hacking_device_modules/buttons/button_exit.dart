@@ -17,9 +17,9 @@ class ButtonExit extends ButtonBase {
 
   @override
   Rect getArea() {
-    var width = hackingDevice.gameWidth! * 0.111;
+    var width = hackingDevice.gameWidth * 0.111;
     var height = hackingDevice.gameHeight * 0.125;
-    var offsetX = hackingDevice.gameWidth! * 0.846;
+    var offsetX = hackingDevice.gameWidth * 0.846;
     var offsetY = hackingDevice.gameHeight * 0.038;
     return Rect.fromLTWH(offsetX, offsetY, width, height);
   }

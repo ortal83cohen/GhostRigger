@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +18,9 @@ class DisplayOutput extends DeviceModuleBase {
 
   @override
   void render(Canvas canvas) {
-    var width = hackingDevice.gameWidth! * 0.187;
+    var width = hackingDevice.gameWidth * 0.187;
     var height = hackingDevice.gameHeight * 0.125;
-    var offsetX = hackingDevice.gameWidth! * 0.639;
+    var offsetX = hackingDevice.gameWidth * 0.639;
     var offsetY = hackingDevice.gameHeight * 0.038;
     area = Rect.fromLTWH(offsetX, offsetY, width, height);
     sprite.renderRect(canvas, area!);

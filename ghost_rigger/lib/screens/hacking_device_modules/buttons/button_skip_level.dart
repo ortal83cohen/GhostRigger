@@ -18,9 +18,9 @@ class ButtonSkipLevel extends ButtonBase {
 
   @override
   Rect getArea() {
-    var width = hackingDevice.gameWidth! * 0.25;
-    var height = hackingDevice.gameWidth! * 0.062;
-    var offsetX = hackingDevice.gameWidth! * 0.52;
+    var width = hackingDevice.gameWidth * 0.25;
+    var height = hackingDevice.gameWidth * 0.062;
+    var offsetX = hackingDevice.gameWidth * 0.52;
     var offsetY = hackingDevice.gameHeight * 0.783;
     return Rect.fromLTWH(offsetX, offsetY, width, height);
   }

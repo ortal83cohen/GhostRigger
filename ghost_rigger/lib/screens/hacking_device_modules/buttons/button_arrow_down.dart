@@ -19,9 +19,9 @@ class ButtonArrowDown extends ButtonBase {
 
   @override
   Rect getArea() {
-    var width = hackingDevice.gameWidth! * 0.111;
+    var width = hackingDevice.gameWidth * 0.111;
     var height = hackingDevice.gameHeight * 0.103;
-    var offsetX = hackingDevice.gameWidth! * 0.846;
+    var offsetX = hackingDevice.gameWidth * 0.846;
     var offsetY = hackingDevice.gameHeight * 0.855;
     return Rect.fromLTWH(offsetX, offsetY, width, height);
   }

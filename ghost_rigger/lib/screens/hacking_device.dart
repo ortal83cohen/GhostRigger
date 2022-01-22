@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flutter/gestures.dart';
 import 'package:ghost_rigger/screens/hacking_device_modules/buttons/button_skip_level.dart';
 import 'package:ghost_rigger/screens/hacking_device_modules/doors_animation.dart';
 
@@ -190,21 +189,6 @@ class HackingDevice extends FlameGame with MultiTouchTapDetector, MultiTouchDrag
     screenSize = canvasSize.toSize();
       super.onGameResize(canvasSize);
   }
-
-
-
-  void _onDragUpdated(DragUpdateDetails details) {
-
-  }
-
-  void _onDragEnded(DragEndDetails details) {
-
-  }
-
-  void _onDragCancelled() {
-
-  }
-
   void clearPuzzleSolution() {
     puzzle.clearSolution();
     board.pieces.forEach((piecesRow) {
@@ -302,7 +286,7 @@ class HackingDevice extends FlameGame with MultiTouchTapDetector, MultiTouchDrag
   void onDragUpdate(int pointerId, DragUpdateInfo info) {
     print('_onDragUpdated: ${info.raw.globalPosition}');
 
-    var mainOffsetX = (screenSize.width - gameWidth!) / 2;
+    var mainOffsetX = (screenSize.width - gameWidth) / 2;
     var tapCorrectedX = info.raw.globalPosition.dx - mainOffsetX;
     var tapCorrectedY = info.raw.globalPosition.dy;
     deviceModules.forEach((module) {

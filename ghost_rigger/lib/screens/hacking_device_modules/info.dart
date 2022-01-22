@@ -1,7 +1,5 @@
-import 'dart:ui';
 
 import 'package:flame/sprite.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../hacking_device.dart';
@@ -29,9 +27,9 @@ class Info extends DeviceModuleBase {
   void render(Canvas canvas) {
     if (!show) return;
 
-    var width = hackingDevice.gameWidth! * 0.683;
+    var width = hackingDevice.gameWidth * 0.683;
     var height = hackingDevice.gameHeight * 0.768;
-    var offsetX = hackingDevice.gameWidth! * 0.143;
+    var offsetX = hackingDevice.gameWidth * 0.143;
     var offsetY = hackingDevice.gameHeight * 0.19;
     area = Rect.fromLTWH(offsetX, offsetY, width, height);
     backgroundSprite.renderRect(canvas, area!);

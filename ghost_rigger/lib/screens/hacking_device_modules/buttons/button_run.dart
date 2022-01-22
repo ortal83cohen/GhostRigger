@@ -17,9 +17,9 @@ class ButtonRun extends ButtonBase {
 
   @override
   Rect getArea() {
-    var width = hackingDevice.gameWidth! * 0.089;
+    var width = hackingDevice.gameWidth * 0.089;
     var height = hackingDevice.gameHeight * 0.125;
-    var offsetX = hackingDevice.gameWidth! * 0.143;
+    var offsetX = hackingDevice.gameWidth * 0.143;
     var offsetY = hackingDevice.gameHeight * 0.038;
     return Rect.fromLTWH(offsetX, offsetY, width, height);
   }

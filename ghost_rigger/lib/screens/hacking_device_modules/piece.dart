@@ -1,7 +1,5 @@
-import 'dart:ui';
 
 import 'package:flame/sprite.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../hacking_device.dart';
@@ -79,7 +77,7 @@ class Piece extends DeviceModuleBase {
 
   @override
   void render(Canvas canvas) {
-    var width = hackingDevice.gameWidth! * 0.082;
+    var width = hackingDevice.gameWidth * 0.082;
     var height = width;
 
     if (isLit)
@@ -149,7 +147,7 @@ class Piece extends DeviceModuleBase {
 
   @override
   void update(double t) {
-    var width = hackingDevice.gameWidth! * 0.082;
+    var width = hackingDevice.gameWidth * 0.082;
     var halfWidth = width * 0.5;
     var desiredPositionX = dragPosition == null ? offset.dx : dragPosition!.dx - halfWidth;
     var desiredPositionY = dragPosition == null ? offset.dy : dragPosition!.dy - halfWidth;
