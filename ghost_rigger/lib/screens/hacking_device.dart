@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flame/game.dart';
-import 'package:flame/gestures.dart';
+import 'package:flame/input.dart';
 import 'package:flutter/gestures.dart';
 import 'package:ghost_rigger/screens/hacking_device_modules/buttons/button_skip_level.dart';
 import 'package:ghost_rigger/screens/hacking_device_modules/doors_animation.dart';
@@ -20,31 +20,29 @@ import 'hacking_device_modules/buttons/button_run.dart';
 import 'hacking_device_modules/device_module_base.dart';
 import 'hacking_device_modules/display_goal.dart';
 import 'hacking_device_modules/display_output.dart';
+import 'hacking_device_modules/display_status.dart';
 import 'hacking_device_modules/info.dart';
 import 'hacking_device_modules/light_animation.dart';
-import 'hacking_device_modules/piece_selector.dart';
-import 'hacking_device_modules/display_status.dart';
 import 'hacking_device_modules/piece.dart';
+import 'hacking_device_modules/piece_selector.dart';
 import 'models/level_model.dart';
 import 'models/piece_model.dart';
 import 'models/puzzle_model.dart';
 
-class HackingDevice extends Game
-    with MultiTouchTapDetector, MultiTouchDragDetector {
-
-  Size screenSize;
-  double gameHeight;
-  double gameWidth;
-  Board board;
-  PieceSelector pieceSelector;
-  Info info;
-  List<DeviceModuleBase> deviceModules;
+class HackingDevice extends FlameGame with MultiTouchTapDetector, MultiTouchDragDetector {
+  late Size screenSize;
+  late double gameHeight;
+  late double gameWidth;
+  late Board board;
+  late PieceSelector pieceSelector;
+  late Info info;
+  late List<DeviceModuleBase?> deviceModules;
 
   LevelModel level;
-  PuzzleModel puzzle;
-  int puzzleNumber;
-  int numberOfPuzzles;
-  bool isShowingInfo;
+  late PuzzleModel puzzle;
+  int puzzleNumber = 0;
+  int? numberOfPuzzles;
+  bool? isShowingInfo;
 
   void Function() _onExit;
   void Function() _onCompleted;
@@ -52,10 +50,17 @@ class HackingDevice extends Game
   HackingDevice(this.level, this._onExit, this._onCompleted) {
     puzzleNumber = 0;
     numberOfPuzzles = level.puzzles.length;
-    setUpNextPuzzle();
   }
 
-  bool setUpNextPuzzle() {
+  @override
+  Future<void> onLoad() async {
+    screenSize = size.toSize();
+    gameWidth = 0;
+    await setUpNextPuzzle();
+    super.onLoad();
+  }
+
+  Future<bool> setUpNextPuzzle() async {
     if (level.puzzles.isEmpty) {
       _onCompleted.call();
       return true;
@@ -70,6 +75,7 @@ class HackingDevice extends Game
     board = Board(this);
     pieceSelector = PieceSelector(this);
     info = Info(this);
+    await info.load();
     deviceModules = [
       Background(this),
       DisplayStatus(this),
@@ -87,25 +93,30 @@ class HackingDevice extends Game
       board,
       pieceSelector,
     ];
-
+    await board.load();
     puzzle.validCellPositions.forEach((validPosition) {
       board.validCells[validPosition[0]][validPosition[1]] = true;
     });
 
-    var piecesForPieceSelector = puzzle.pieces
-        .where((piece) => piece.positionInBoardColumn == -1)
-        .map((pieceModel) => Piece(this, pieceModel)).toList();
-    piecesForPieceSelector.forEach((piece) {
-      pieceSelector.pieces.add(piece);
-      piece.isInPieceSelector = true;
-      deviceModules.add(piece);
+    var piecesForPieceSelector =
+        puzzle.pieces.where((piece) => piece.positionInBoardColumn == -1).map((pieceModel) async {
+      Piece piece = Piece(this, pieceModel);
+      await piece.load();
+      return piece;
+    }).toList();
+    piecesForPieceSelector.forEach((piece) async {
+      Piece piec = await piece;
+      pieceSelector.pieces.add(piec);
+      piec.isInPieceSelector = true;
+      deviceModules.add(piec);
     });
 
     var piecesForBoard = puzzle.pieces
         .where((pieceModel) => pieceModel.positionInBoardRow != -1)
-        .map((pieceModel) => Piece(this, pieceModel)).toList();
+        .map((pieceModel) => Piece(this, pieceModel))
+        .toList();
     piecesForBoard.forEach((piece) {
-      board.pieces[piece.positionInBoardRow][piece.positionInBoardColumn] = piece;
+      board.pieces[piece.positionInBoardRow!][piece.positionInBoardColumn!] = piece;
       piece.isInPieceSelector = false;
       deviceModules.add(piece);
     });
@@ -120,6 +131,9 @@ class HackingDevice extends Game
     } else
       hideInfo();
 
+    deviceModules.forEach((element) async {
+      await element?.load();
+    });
     return false;
   }
 
@@ -127,9 +141,10 @@ class HackingDevice extends Game
   void render(Canvas canvas) {
     preRender(canvas);
     deviceModules.forEach((module) {
-      module.render(canvas);
+      module!.render(canvas);
     });
     postRender(canvas);
+    super.render(canvas);
   }
 
   void preRender(Canvas canvas) {
@@ -147,32 +162,9 @@ class HackingDevice extends Game
   @override
   void update(double t) {
     deviceModules.forEach((module) {
-      module.update(t);
+      module!.update(t);
     });
-  }
-
-  @override
-  void onTapUp(int pointerId, TapUpDetails details) {
-    print('onTapUp: ${details.globalPosition}');
-
-    var mainOffsetX = (screenSize.width - gameWidth) / 2;
-    var tapCorrectedX = details.globalPosition.dx - mainOffsetX;
-    var tapCorrectedY = details.globalPosition.dy;
-    deviceModules.forEach((module) {
-      module.onTapUp(tapCorrectedX, tapCorrectedY);
-    });
-  }
-
-  @override
-  void onTapDown(int pointerId, TapDownDetails details) {
-    print('onTapDown: ${details.globalPosition}');
-
-    var mainOffsetX = (screenSize.width - gameWidth) / 2;
-    var tapCorrectedX = details.globalPosition.dx - mainOffsetX;
-    var tapCorrectedY = details.globalPosition.dy;
-    deviceModules.forEach((module) {
-      module.onTapDown(tapCorrectedX, tapCorrectedY);
-    });
+    super.update(t);
   }
 
   @override
@@ -180,7 +172,7 @@ class HackingDevice extends Game
     print('onTap');
 
     deviceModules.forEach((module) {
-      module.onTap();
+      module!.onTap();
     });
   }
 
@@ -189,68 +181,54 @@ class HackingDevice extends Game
     print('onTapCancel');
 
     deviceModules.forEach((module) {
-      module.onTapCancel();
+      module!.onTapCancel();
     });
   }
 
   @override
-  void onReceiveDrag(DragEvent drag) {
-    drag.onUpdate = _onDragUpdated;
-    drag.onEnd = _onDragEnded;
-    drag.onCancel = _onDragCancelled;
+  void onGameResize(Vector2 canvasSize) {
+    screenSize = canvasSize.toSize();
+      super.onGameResize(canvasSize);
   }
 
-  void _onDragUpdated(DragUpdateDetails details) {
-    print('_onDragUpdated: ${details.globalPosition}');
 
-    var mainOffsetX = (screenSize.width - gameWidth) / 2;
-    var tapCorrectedX = details.globalPosition.dx - mainOffsetX;
-    var tapCorrectedY = details.globalPosition.dy;
-    deviceModules.forEach((module) {
-      module.onDragUpdate(tapCorrectedX, tapCorrectedY);
-    });
+
+  void _onDragUpdated(DragUpdateDetails details) {
+
   }
 
   void _onDragEnded(DragEndDetails details) {
-    print('_onDragEnded: ${details.velocity}');
 
-    deviceModules.forEach((module) {
-      module.onDragEnd(details.velocity);
-    });
   }
 
   void _onDragCancelled() {
-    print('_onDragCancelled');
 
-    deviceModules.forEach((module) {
-      module.onDragCancel();
-    });
-  }
-
-  @override
-  void resize(Size size) {
-    screenSize = size;
-    super.resize(size);
   }
 
   void clearPuzzleSolution() {
     puzzle.clearSolution();
-    board.pieces.forEach((piecesRow) { piecesRow.forEach((piece) { piece?.isLit = false; }); });
+    board.pieces.forEach((piecesRow) {
+      piecesRow.forEach((piece) {
+        piece?.isLit = false;
+      });
+    });
   }
 
   void solvePuzzle() {
-    var pieceModelRows = board.pieces.map((piecesRow) => piecesRow.map((piece) => _fromPieceToPieceModel(piece)).toList());
+    var pieceModelRows =
+        board.pieces.map((piecesRow) => piecesRow.map((piece) => _fromPieceToPieceModel(piece)).toList());
     puzzle.solvePuzzle(pieceModelRows.toList());
     puzzle.visitedPieces.forEach((visitedPiece) {
-      board.pieces[visitedPiece.positionInBoardRow][visitedPiece.positionInBoardColumn].isLit = true;
+      board.pieces[visitedPiece.positionInBoardRow!][visitedPiece.positionInBoardColumn!]!.isLit = true;
     });
   }
 
   void solveNextStep() {
-    var pieceModelRows = board.pieces.map((piecesRow) => piecesRow.map((piece) => _fromPieceToPieceModel(piece)).toList());
+    var pieceModelRows =
+        board.pieces.map((piecesRow) => piecesRow.map((piece) => _fromPieceToPieceModel(piece)).toList());
     puzzle.solveNextStep(pieceModelRows.toList());
     puzzle.visitedPieces.forEach((visitedPiece) {
-      board.pieces[visitedPiece.positionInBoardRow][visitedPiece.positionInBoardColumn].isLit = true;
+      board.pieces[visitedPiece.positionInBoardRow!][visitedPiece.positionInBoardColumn!]!.isLit = true;
     });
   }
 
@@ -266,18 +244,86 @@ class HackingDevice extends Game
     info.show = false;
   }
 
-  PieceModel _fromPieceToPieceModel(Piece piece) {
+  PieceModel? _fromPieceToPieceModel(Piece? piece) {
     return piece != null
         ? PieceModel(
-        positionInBoardColumn: piece.positionInBoardColumn,
-        positionInBoardRow: piece.positionInBoardRow,
-        arithmeticValue: piece.arithmeticValue,
-        arithmeticOperation: piece.arithmeticOperation,
-        hastTopCable: piece.hastTopCable,
-        hastRightCable: piece.hastRightCable,
-        hastBottomCable: piece.hastBottomCable,
-        hastLeftCable: piece.hastLeftCable,
-        isInOrOut: piece.isInOrOut)
+            positionInBoardColumn: piece.positionInBoardColumn,
+            positionInBoardRow: piece.positionInBoardRow,
+            arithmeticValue: piece.arithmeticValue,
+            arithmeticOperation: piece.arithmeticOperation,
+            hastTopCable: piece.hastTopCable,
+            hastRightCable: piece.hastRightCable,
+            hastBottomCable: piece.hastBottomCable,
+            hastLeftCable: piece.hastLeftCable,
+            isInOrOut: piece.isInOrOut)
         : null;
+  }
+
+  @override
+  void onMount() {
+
+  }
+
+  @override
+  void onTapDown(int pointerId, TapDownInfo info) {
+      print('onTapDown: ${info.raw.globalPosition}');
+
+      var mainOffsetX = (screenSize.width - gameWidth) / 2;
+      var tapCorrectedX = info.raw.globalPosition.dx - mainOffsetX;
+      var tapCorrectedY = info.raw.globalPosition.dy;
+      deviceModules.forEach((module) {
+        module?.onTapDown(tapCorrectedX, tapCorrectedY);
+      });
+  }
+
+  @override
+  void onTapUp(int pointerId, TapUpInfo info) {
+      print('onTapUp: ${info.raw.globalPosition}');
+
+      var mainOffsetX = (screenSize.width - gameWidth) / 2;
+      var tapCorrectedX = info.raw.globalPosition.dx - mainOffsetX;
+      var tapCorrectedY = info.raw.globalPosition.dy;
+      deviceModules.forEach((module) {
+        module?.onTapUp(tapCorrectedX, tapCorrectedY);
+      });
+  }
+
+  @override
+  void onLongTapDown(int pointerId, TapDownInfo info) {
+
+  }
+
+  @override
+  void onDragStart(int pointerId, DragStartInfo info) {
+
+  }
+
+  @override
+  void onDragUpdate(int pointerId, DragUpdateInfo info) {
+    print('_onDragUpdated: ${info.raw.globalPosition}');
+
+    var mainOffsetX = (screenSize.width - gameWidth!) / 2;
+    var tapCorrectedX = info.raw.globalPosition.dx - mainOffsetX;
+    var tapCorrectedY = info.raw.globalPosition.dy;
+    deviceModules.forEach((module) {
+      module!.onDragUpdate(tapCorrectedX, tapCorrectedY);
+    });
+  }
+  @override
+  void onDragEnd(int pointerId, DragEndInfo info) {
+    print('_onDragEnded: ${info.raw.velocity}');
+
+    deviceModules.forEach((module) {
+      module!.onDragEnd(info.raw.velocity);
+    });
+  }
+
+  @override
+  void onDragCancel(int pointerId) {
+    print('_onDragCancelled');
+
+    deviceModules.forEach((module) {
+      module!.onDragCancel();
+    });
   }
 }

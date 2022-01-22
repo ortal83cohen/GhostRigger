@@ -1,30 +1,31 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 class ConsoleAnimatedTextKit extends StatefulWidget {
   /// List of [String] that would be displayed subsequently in the animation.
   final List<String> text;
 
   /// Gives [TextStyle] to the text strings.
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// The [Duration] of the delay between the apparition of each characters.
   ///
   /// By default it is set to 30 milliseconds
-  final Duration speed;
+  final Duration? speed;
 
   /// Define the [Duration] of the pause between texts
   ///
   /// By default it is set to 1000 milliseconds.
-  final Duration pause;
+  final Duration? pause;
 
   /// Adds the onTap [VoidCallback] to the animated widget.
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   /// Adds the onFinished [VoidCallback] to the animated widget.
   ///
   /// This method will run only if [isRepeatingAnimation] is set to false.
-  final VoidCallback onFinished;
+  final VoidCallback? onFinished;
 
   /// Adds [AlignmentGeometry] property to the text in the widget.
   ///
@@ -42,8 +43,8 @@ class ConsoleAnimatedTextKit extends StatefulWidget {
   final bool displayFullTextOnTap;
 
   ConsoleAnimatedTextKit({
-    Key key,
-    @required this.text,
+    Key? key,
+    required this.text,
     this.textStyle,
     this.speed,
     this.pause,
@@ -52,8 +53,7 @@ class ConsoleAnimatedTextKit extends StatefulWidget {
     this.onFinished,
     this.alignment = AlignmentDirectional.topStart,
     this.textAlign = TextAlign.start,
-  })  : assert(text != null, 'You must specify the list of text'),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   _ConsoleState createState() => _ConsoleState();
@@ -61,24 +61,25 @@ class ConsoleAnimatedTextKit extends StatefulWidget {
 
 class _ConsoleState extends State<ConsoleAnimatedTextKit>
     with TickerProviderStateMixin {
-  AnimationController _controller;
+  AnimationController? _controller;
 
-  Animation _consoleAnimation;
+  late Animation _consoleAnimation;
   List<Widget> textWidgetList = [];
 
-  Duration _speed;
-  Duration _pause;
+  late Duration _speed;
+  late Duration _pause;
 
   List<String> _lines = [];
 
   bool _isCurrentlyPausing = false;
   bool _isFirstRun = true;
   int _blinkTime = 20;
-  int _lastAnimationValue = 0;
-  int _blinkCursorCount = 0;
-  Timer _timer;
+  int? _lastAnimationValue = 0;
+  int? _blinkCursorCount = 0;
+  // ignore: unused_field
+  Timer? _timer;
 
-  int _endValue;
+  int? _endValue;
 
   @override
   void initState() {
@@ -115,45 +116,35 @@ class _ConsoleState extends State<ConsoleAnimatedTextKit>
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: _onTap,
-        child: _isCurrentlyPausing || !_controller.isAnimating
+        child: _isCurrentlyPausing || !_controller!.isAnimating
             ? RichText(
                 text: TextSpan(children: [
                   TextSpan(
                     text: _lines.join(''),
                     style: widget.textStyle,
                   ),
-                  TextSpan(
-                      text: '_',
-                      style:
-                          widget.textStyle.copyWith(color: Colors.transparent))
+                  TextSpan(text: '_', style: widget.textStyle!.copyWith(color: Colors.transparent))
                 ], style: widget.textStyle),
                 textAlign: widget.textAlign,
               )
             : AnimatedBuilder(
-                animation: _controller,
-                builder: (BuildContext context, Widget child) {
+                animation: _controller!,
+                builder: (BuildContext context, Widget? child) {
                   String visibleString = _lines.join('');
-                  var cursorColor = Colors.transparent;
+                  Color? cursorColor = Colors.transparent;
                   try {
                     if (_consoleAnimation.value == 0) {
                       visibleString = "";
                     } else if (cursorBlinking(_consoleAnimation.value)) {
-                      cursorColor = _consoleAnimation.value % 2 == 0
-                          ? widget.textStyle.color
-                          : Colors.transparent;
+                      cursorColor = _consoleAnimation.value % 2 == 0 ? widget.textStyle!.color : Colors.transparent;
 
-                      visibleString =
-                          visibleString.substring(0, _lastAnimationValue);
+                      visibleString = visibleString.substring(0, _lastAnimationValue);
                       _blinkCursorCount =
                           _consoleAnimation.value - _lastAnimationValue;
                     } else {
-                      _lastAnimationValue =
-                          _consoleAnimation.value - _blinkCursorCount;
-                      cursorColor = _lastAnimationValue % 2 == 0
-                          ? widget.textStyle.color
-                          : Colors.transparent;
-                      visibleString =
-                          visibleString.substring(0, _lastAnimationValue);
+                _lastAnimationValue = _consoleAnimation.value - _blinkCursorCount;
+                      cursorColor = _lastAnimationValue! % 2 == 0 ? widget.textStyle!.color : Colors.transparent;
+                      visibleString = visibleString.substring(0, _lastAnimationValue);
                     }
                   } catch (e) {
                     visibleString = visibleString;
@@ -162,9 +153,7 @@ class _ConsoleState extends State<ConsoleAnimatedTextKit>
                   return RichText(
                     text: TextSpan(children: [
                       TextSpan(text: visibleString),
-                      TextSpan(
-                          text: '_',
-                          style: widget.textStyle.copyWith(color: cursorColor))
+                      TextSpan(text: '_', style: widget.textStyle!.copyWith(color: cursorColor))
                     ], style: widget.textStyle),
                     textAlign: widget.textAlign,
                   );
@@ -186,7 +175,7 @@ class _ConsoleState extends State<ConsoleAnimatedTextKit>
       offset = offset + line.length + _blinkTime;
     }
 
-    if (value > _endValue - _blinkTime - 1) {
+    if (value > _endValue! - _blinkTime - 1) {
       return true;
     }
     return false;
@@ -202,20 +191,19 @@ class _ConsoleState extends State<ConsoleAnimatedTextKit>
       return;
     }
 
-    var duration = _lines.fold(
-        Duration(), (prev, next) => (_speed * next.length) + _pause + prev);
+    var duration = _lines.fold(Duration(), (dynamic prev, next) => (_speed * next.length) + _pause + prev);
 
     _controller = AnimationController(
       duration: duration,
       vsync: this,
     );
 
-    _endValue = _lines.fold(0, (prev, next) => prev + next.length + _blinkTime);
+    _endValue = _lines.fold(0, (prev, next) => (prev??0) + next.length + _blinkTime);
 
-    _consoleAnimation = StepTween(begin: 0, end: _endValue).animate(_controller)
+    _consoleAnimation = StepTween(begin: 0, end: _endValue).animate(_controller!)
       ..addStatusListener(_animationEndCallback);
 
-    _controller.forward();
+    _controller!.forward();
   }
 
   void _setPause() {
@@ -233,7 +221,7 @@ class _ConsoleState extends State<ConsoleAnimatedTextKit>
 
   void _onTap() {
     if (widget.displayFullTextOnTap) {
-      _controller.stop();
+      _controller!.stop();
       _setPause();
 
       _isFirstRun = true;

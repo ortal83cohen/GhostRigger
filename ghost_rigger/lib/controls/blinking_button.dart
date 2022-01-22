@@ -4,18 +4,18 @@ class BlinkingButton extends StatefulWidget {
   @override
   _BlinkingButtonState createState() => _BlinkingButtonState();
 
-  Function onPressed;
-  BlinkingButton(this.onPressed) {}
+  final Function onPressed;
+
+  BlinkingButton(this.onPressed);
 }
 
 class _BlinkingButtonState extends State<BlinkingButton>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   @override
   void initState() {
-    _animationController =
-        new AnimationController(vsync: this, duration: Duration(seconds: 1));
+    _animationController = new AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animationController.repeat();
     super.initState();
   }
@@ -26,10 +26,9 @@ class _BlinkingButtonState extends State<BlinkingButton>
       opacity: _animationController,
       child: OutlineButton(
         padding: EdgeInsets.all(12.0),
-        onPressed: () => widget.onPressed?.call(),
+        onPressed: () => widget.onPressed.call(),
         borderSide: BorderSide(color: Colors.cyanAccent),
-        shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(0.0)),
+        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0)),
         child: Text(
           'Send',
           style: TextStyle(

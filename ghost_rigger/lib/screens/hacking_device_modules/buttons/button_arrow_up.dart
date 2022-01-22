@@ -1,12 +1,20 @@
 import 'dart:ui';
 
+import 'package:flame/sprite.dart';
+
 import '../../hacking_device.dart';
 import '../piece.dart';
 import 'button_base.dart';
 
 class ButtonArrowUp extends ButtonBase {
-  ButtonArrowUp(HackingDevice hackingDevice, Function onPressed)
-      : super(hackingDevice, 'button_arrow_up.png', 'button_arrow_up_pressed.png', onPressed);
+  ButtonArrowUp(HackingDevice hackingDevice, Function? onPressed) : super(hackingDevice, onPressed as void Function()?);
+
+  @override
+  Future<void> load() async {
+    buttonSprite = await Sprite.load('button_arrow_up.png');
+    buttonPressedSprite = await Sprite.load('button_arrow_up_pressed.png');
+    super.load();
+  }
 
   @override
   Rect getArea() {
@@ -20,8 +28,7 @@ class ButtonArrowUp extends ButtonBase {
   @override
   void onTapDown(double dX, double dY) {
     super.onTapDown(dX, dY);
-    if (pressed && Piece.draggedPiece == null)
-      hackingDevice.pieceSelector.scrollDirection = 1;
+    if (pressed && Piece.draggedPiece == null) hackingDevice.pieceSelector.scrollDirection = 1;
   }
 
   @override

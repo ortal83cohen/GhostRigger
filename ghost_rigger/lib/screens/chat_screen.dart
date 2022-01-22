@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+
+import '../animation/console_animation.dart';
 import '../audio.dart';
 import '../controls/blinking_button.dart';
-import '../animation/console_animation.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -18,13 +17,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     Audio.stop();
     return Container(
-      decoration: BoxDecoration(
-          color: Colors.black, border: Border.all(color: Colors.cyanAccent)),
+      decoration: BoxDecoration(color: Colors.black, border: Border.all(color: Colors.cyanAccent)),
       child: Column(
         children: <Widget>[
           Container(
-            decoration: BoxDecoration(
-                color: Colors.black, border: Border.all(color: Colors.cyan)),
+            decoration: BoxDecoration(color: Colors.black, border: Border.all(color: Colors.cyan)),
             child: Flexible(
               flex: 1,
               child: Row(
@@ -34,13 +31,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   Flexible(
                     flex: 1,
                     child: OutlineButton(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 15.0),
-                      onPressed: () => Navigator.of(context)
-                          .pushReplacementNamed('/level1'),
+                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+                      onPressed: () => Navigator.of(context).pushReplacementNamed('/level1'),
                       borderSide: BorderSide(color: Colors.cyanAccent),
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(0.0)),
+                      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0)),
                       child: Text(
                         'Skip',
                         style: TextStyle(
@@ -65,15 +59,12 @@ class _ChatScreenState extends State<ChatScreen> {
                   Flexible(
                     flex: 3,
                     child: OutlineButton(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 15.0),
+                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
                       onPressed: () => {},
                       color: Colors.purpleAccent,
                       highlightedBorderColor: Colors.purpleAccent,
-                      borderSide:
-                          BorderSide(color: Colors.purpleAccent, width: 2.0),
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(0.0)),
+                      borderSide: BorderSide(color: Colors.purpleAccent, width: 2.0),
+                      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0)),
                       child: Text(
                         'Encryption: Secure',
                         style: TextStyle(
@@ -128,9 +119,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           Container(
-            decoration: BoxDecoration(
-                color: Colors.black,
-                border: Border.all(color: Colors.cyanAccent)),
+            decoration: BoxDecoration(color: Colors.black, border: Border.all(color: Colors.cyanAccent)),
             child: Flexible(
               flex: 1,
               child: Row(
@@ -138,18 +127,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(color: Colors.cyan)),
+                    decoration: BoxDecoration(color: Colors.black, border: Border.all(color: Colors.cyan)),
                     child: Flexible(
                       flex: 2,
                       child: OutlineButton(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 15.0),
+                        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
                         onPressed: null,
                         borderSide: BorderSide(color: Colors.cyanAccent),
-                        shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(0.0)),
+                        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0)),
                         child: Text(
                           'Message:',
                           style: TextStyle(
@@ -188,24 +173,20 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   Container(
-                    decoration: BoxDecoration(
-                        color: Colors.black,
-                        border: Border.all(color: Colors.cyanAccent)),
+                    decoration: BoxDecoration(color: Colors.black, border: Border.all(color: Colors.cyanAccent)),
                     child: Flexible(
                       flex: 2,
                       child: _showSendButton
                           ? BlinkingButton(
                               () {
-                                Navigator.of(context)
-                                    .pushReplacementNamed('/level1');
+                                Navigator.of(context).pushReplacementNamed('/level1');
                               },
                             )
                           : OutlineButton(
                               padding: EdgeInsets.all(8.0),
                               onPressed: null,
                               borderSide: BorderSide(color: Colors.cyanAccent),
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(0.0)),
+                              shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(0.0)),
                               child: Text(
                                 'Send',
                                 style: TextStyle(

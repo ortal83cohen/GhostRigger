@@ -1,33 +1,30 @@
 import 'dart:async';
 
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flame/audio_pool.dart';
+import 'package:flame_audio/audio_pool.dart';
 
 enum Song { GAME, MENU, DRAMATIC }
 
 Future<AudioPool> loadSfx(String file) async {
-  final audio =
-      AudioPool(file, prefix: 'audio/sfx/', minPlayers: 2, maxPlayers: 4);
-  await audio.init();
+  final audio = AudioPool.create(file, prefix: 'audio/sfx/', minPlayers: 2, maxPlayers: 4);
+  await audio; //.init();
   return audio;
 }
 
 class Audio {
-  static AudioCache musicPlayer;
-  static Song song;
+  static late AudioCache musicPlayer;
+  static Song? song;
   static bool isPaused = false;
   static bool initialised = false;
 
-  static AudioPlayer _audioPlayer;
+  static AudioPlayer? _audioPlayer;
 
   static Map<String, AudioPool> sfx = {};
 
   static Future init() async {
     musicPlayer = AudioCache(prefix: 'audio/bgm/', fixedPlayer: AudioPlayer());
-    await musicPlayer
-        .loadAll(['menu.mp3', 'music.mp3', 'ingame.mp3', 'intro.mp3']);
-    await musicPlayer.fixedPlayer.setReleaseMode(ReleaseMode.LOOP);
+    await musicPlayer.loadAll(['menu.mp3', 'music.mp3', 'ingame.mp3', 'intro.mp3']);
+    await musicPlayer.fixedPlayer!.setReleaseMode(ReleaseMode.LOOP);
 
     final sounds = [
       'block.wav',
@@ -43,7 +40,7 @@ class Audio {
 
   static void playSfx(String file) {
     if (!isPaused) {
-      sfx[file].start();
+      sfx[file]!.start();
     }
   }
 
@@ -94,12 +91,12 @@ class Audio {
 
     if (song != null) {
       if (!isPaused) {
-        await musicPlayer.fixedPlayer.resume();
+        await musicPlayer.fixedPlayer!.resume();
       } else {
-        await musicPlayer.fixedPlayer.pause();
+        await musicPlayer.fixedPlayer!.pause();
       }
     } else {
-      await musicPlayer.fixedPlayer.stop();
+      await musicPlayer.fixedPlayer!.stop();
     }
   }
 }

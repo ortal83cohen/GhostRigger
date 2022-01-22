@@ -1,20 +1,19 @@
 import 'package:flame/flame.dart';
-import 'package:flame/util.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:ghost_rigger/screens/newspaper_screen.dart';
+
 import 'audio.dart';
 import 'screens/chat_screen.dart';
-import 'screens/decyrpt_screen.dart';
-import 'screens/intro_screen.dart';
 import 'screens/credits_screen.dart';
+import 'screens/decyrpt_screen.dart';
 import 'screens/game_screen.dart';
-import 'screens/menu_screen.dart';
 import 'screens/hacking_device.dart';
+import 'screens/intro_screen.dart';
+import 'screens/menu_screen.dart';
 
 class Main {
-  static HackingDevice game;
-  static int currentLevel = 1;
+  static HackingDevice? game;
+  static int? currentLevel = 1;
 }
 
 class _Handler extends WidgetsBindingObserver {
@@ -30,10 +29,9 @@ class _Handler extends WidgetsBindingObserver {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Flame.device.fullScreen();
+  await Flame.device.setLandscape();
 
-  Util flameUtil = Util();
-  flameUtil.fullScreen();
-  flameUtil.setOrientation(DeviceOrientation.landscapeLeft);
   Flame.images.loadAll(<String>[
     'main.png',
     'left.png',
@@ -90,14 +88,14 @@ void main() async {
     'line_border.png',
     'line_in_out.png',
   ]);
-  Flame.audio.loadAll(<String>[
-    'bgm/menu.mp3',
-    'bgm/music.mp3',
-    'bgm/ingame.mp3',
-    'bgm/intro.mp3',
-    'sfx/block.wav',
-    'sfx/menu.aac',
-  ]);
+  // Flame.audio.loadAll(<String>[ todo
+  //   'bgm/menu.mp3',
+  //   'bgm/music.mp3',
+  //   'bgm/ingame.mp3',
+  //   'bgm/intro.mp3',
+  //   'sfx/block.wav',
+  //   'sfx/menu.aac',
+  // ]);
 
   await Audio.init();
 
@@ -150,5 +148,5 @@ void main() async {
     },
   ));
 
-  WidgetsBinding.instance.addObserver(_Handler());
+  WidgetsBinding.instance!.addObserver(_Handler());
 }

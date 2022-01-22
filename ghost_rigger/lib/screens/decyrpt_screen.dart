@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../animation/console_animation.dart';
 
+import '../animation/console_animation.dart';
 import '../main.dart';
 
 class DecryptScreen extends StatefulWidget {
@@ -12,7 +12,7 @@ class _DecryptScreenState extends State<DecryptScreen> {
   bool _showContinue = false;
   @override
   Widget build(BuildContext context) {
-    final int nextLevel = ModalRoute.of(context).settings.arguments;
+    final int? nextLevel = ModalRoute.of(context)!.settings.arguments as int?;
 
     Main.currentLevel = nextLevel;
     return Container(
@@ -35,7 +35,7 @@ class _DecryptScreenState extends State<DecryptScreen> {
                 fit: FlexFit.loose,
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: getContent(),
+                   child: getContent(),
                 ),
               ),
               Flexible(

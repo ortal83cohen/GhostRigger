@@ -1,3 +1,4 @@
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:ghost_rigger/screens/hacking_device.dart';
 import 'package:ghost_rigger/screens/models/level_model.dart';
@@ -11,13 +12,14 @@ class GameScreen extends StatefulWidget {
   @override
   _GameScreenState createState() => _GameScreenState();
 
-  int level;
-  GameScreen(this.level) {}
+  final int? level;
+
+  GameScreen(this.level);
 }
 
 class _GameScreenState extends State<GameScreen> {
   Widget build(context) {
-    LevelModel level;
+    late LevelModel level;
 
     switch (widget.level) {
       case 1:
@@ -73,10 +75,15 @@ class _GameScreenState extends State<GameScreen> {
           Navigator.pop(context);
           break;
       }
-      ;
     });
     Audio.play(Song.GAME);
-    return Main.game.widget;
+
+    if(Main.game == null){
+      return Container(color: Colors.amber,);
+    }
+    return GameWidget(
+      game: Main.game!,
+    );
   }
 
   PuzzleModel getPuzzle1() {
@@ -89,13 +96,8 @@ class _GameScreenState extends State<GameScreen> {
       [2, 4],
     ];
     var pieceModels = [
-      PieceModel(
-          isInOrOut: true,
-          arithmeticValue: 3,
-          positionInBoardRow: 2,
-          positionInBoardColumn: 1),
-      PieceModel(
-          isInOrOut: true, positionInBoardRow: 1, positionInBoardColumn: 5),
+      PieceModel(isInOrOut: true, arithmeticValue: 3, positionInBoardRow: 2, positionInBoardColumn: 1),
+      PieceModel(isInOrOut: true, positionInBoardRow: 1, positionInBoardColumn: 5),
       PieceModel(hastLeftCable: true, hastRightCable: true),
       PieceModel(
           hastBottomCable: true,
@@ -107,11 +109,7 @@ class _GameScreenState extends State<GameScreen> {
           hastRightCable: true,
           arithmeticValue: 2,
           arithmeticOperation: ArithmeticOperation.multiply),
-      PieceModel(
-          hastLeftCable: true,
-          hastTopCable: true,
-          positionInBoardRow: 2,
-          positionInBoardColumn: 2),
+      PieceModel(hastLeftCable: true, hastTopCable: true, positionInBoardRow: 2, positionInBoardColumn: 2),
     ];
     return PuzzleModel(validCellPositions, pieceModels, 8);
   }
@@ -132,18 +130,10 @@ class _GameScreenState extends State<GameScreen> {
       [1, 6],
     ];
     var pieceModels = [
+      PieceModel(isInOrOut: true, arithmeticValue: 1, positionInBoardRow: 0, positionInBoardColumn: 1),
+      PieceModel(isInOrOut: true, positionInBoardRow: 0, positionInBoardColumn: 6),
       PieceModel(
-          isInOrOut: true,
-          arithmeticValue: 1,
-          positionInBoardRow: 0,
-          positionInBoardColumn: 1),
-      PieceModel(
-          isInOrOut: true, positionInBoardRow: 0, positionInBoardColumn: 6),
-      PieceModel(
-          hastTopCable: true,
-          hastRightCable: true,
-          arithmeticValue: 1,
-          arithmeticOperation: ArithmeticOperation.add),
+          hastTopCable: true, hastRightCable: true, arithmeticValue: 1, arithmeticOperation: ArithmeticOperation.add),
       PieceModel(
           hastTopCable: true,
           hastLeftCable: true,
@@ -151,10 +141,7 @@ class _GameScreenState extends State<GameScreen> {
           arithmeticOperation: ArithmeticOperation.subtract),
       PieceModel(hastTopCable: true, hastBottomCable: true),
       PieceModel(
-          hastTopCable: true,
-          hastBottomCable: true,
-          arithmeticValue: 3,
-          arithmeticOperation: ArithmeticOperation.add),
+          hastTopCable: true, hastBottomCable: true, arithmeticValue: 3, arithmeticOperation: ArithmeticOperation.add),
       PieceModel(
           hastTopCable: true,
           hastBottomCable: true,
@@ -200,13 +187,8 @@ class _GameScreenState extends State<GameScreen> {
       [3, 4],
     ];
     var pieceModels = [
-      PieceModel(
-          isInOrOut: true,
-          arithmeticValue: 8,
-          positionInBoardRow: 1,
-          positionInBoardColumn: 1),
-      PieceModel(
-          isInOrOut: true, positionInBoardRow: 3, positionInBoardColumn: 5),
+      PieceModel(isInOrOut: true, arithmeticValue: 8, positionInBoardRow: 1, positionInBoardColumn: 1),
+      PieceModel(isInOrOut: true, positionInBoardRow: 3, positionInBoardColumn: 5),
       PieceModel(hastBottomCable: true, hastRightCable: true),
       PieceModel(
           hastBottomCable: true,
@@ -227,10 +209,7 @@ class _GameScreenState extends State<GameScreen> {
       PieceModel(hastTopCable: true, hastBottomCable: true),
       PieceModel(hastLeftCable: true, hastBottomCable: true),
       PieceModel(
-          hastTopCable: true,
-          hastBottomCable: true,
-          arithmeticValue: 3,
-          arithmeticOperation: ArithmeticOperation.add),
+          hastTopCable: true, hastBottomCable: true, arithmeticValue: 3, arithmeticOperation: ArithmeticOperation.add),
       PieceModel(hastLeftCable: true, hastTopCable: true),
     ];
     return PuzzleModel(validCellPositions, pieceModels, 9);
@@ -262,13 +241,8 @@ class _GameScreenState extends State<GameScreen> {
       [4, 7],
     ];
     var pieceModels = [
-      PieceModel(
-          isInOrOut: true,
-          arithmeticValue: 6,
-          positionInBoardRow: 0,
-          positionInBoardColumn: 2),
-      PieceModel(
-          isInOrOut: true, positionInBoardRow: 4, positionInBoardColumn: 2),
+      PieceModel(isInOrOut: true, arithmeticValue: 6, positionInBoardRow: 0, positionInBoardColumn: 2),
+      PieceModel(isInOrOut: true, positionInBoardRow: 4, positionInBoardColumn: 2),
       PieceModel(
           hastTopCable: true,
           hastBottomCable: true,
@@ -322,13 +296,8 @@ class _GameScreenState extends State<GameScreen> {
       [2, 5],
     ];
     var pieceModels = [
-      PieceModel(
-          isInOrOut: true,
-          arithmeticValue: 5,
-          positionInBoardRow: 2,
-          positionInBoardColumn: 1),
-      PieceModel(
-          isInOrOut: true, positionInBoardRow: 2, positionInBoardColumn: 6),
+      PieceModel(isInOrOut: true, arithmeticValue: 5, positionInBoardRow: 2, positionInBoardColumn: 1),
+      PieceModel(isInOrOut: true, positionInBoardRow: 2, positionInBoardColumn: 6),
       PieceModel(
           hastLeftCable: true,
           hastRightCable: true,
@@ -355,20 +324,14 @@ class _GameScreenState extends State<GameScreen> {
           arithmeticValue: 3,
           arithmeticOperation: ArithmeticOperation.multiply),
       PieceModel(
-          hastLeftCable: true,
-          hastRightCable: true,
-          arithmeticValue: 1,
-          arithmeticOperation: ArithmeticOperation.add),
+          hastLeftCable: true, hastRightCable: true, arithmeticValue: 1, arithmeticOperation: ArithmeticOperation.add),
       PieceModel(
           hastLeftCable: true,
           hastRightCable: true,
           arithmeticValue: 2,
           arithmeticOperation: ArithmeticOperation.multiply),
       PieceModel(
-          hastLeftCable: true,
-          hastRightCable: true,
-          arithmeticValue: 5,
-          arithmeticOperation: ArithmeticOperation.add),
+          hastLeftCable: true, hastRightCable: true, arithmeticValue: 5, arithmeticOperation: ArithmeticOperation.add),
     ];
     return PuzzleModel(validCellPositions, pieceModels, 5);
   }

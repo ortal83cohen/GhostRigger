@@ -1,23 +1,20 @@
 import 'dart:ui';
+
 import 'package:flame/sprite.dart';
 
 import '../../hacking_device.dart';
 import '../device_module_base.dart';
 
 abstract class ButtonBase extends DeviceModuleBase {
-  Sprite buttonSprite;
-  Sprite buttonPressedSprite;
-  Paint paint;
-  bool pressed;
-  bool enabled;
+  late Sprite buttonSprite;
+  late Sprite buttonPressedSprite;
+  Paint? paint;
+  late bool pressed;
+  bool? enabled;
 
-  void Function() _onPressed;
+  void Function()? _onPressed;
 
-  ButtonBase(HackingDevice hackingDevice, String buttonSpriteName,
-      String buttonPressedSpriteName, this._onPressed)
-      : super(hackingDevice) {
-    buttonSprite = Sprite(buttonSpriteName);
-    buttonPressedSprite = Sprite(buttonPressedSpriteName);
+  ButtonBase(HackingDevice hackingDevice, this._onPressed) : super(hackingDevice) {
     paint = Paint();
     enabled = true;
     pressed = false;
@@ -28,16 +25,17 @@ abstract class ButtonBase extends DeviceModuleBase {
     setAlphaFromStatus();
     area = getArea();
     if (pressed)
-      buttonPressedSprite.renderRect(canvas, area, overridePaint: paint);
+      buttonPressedSprite.renderRect(canvas, area!, overridePaint: paint);
     else
-      buttonSprite.renderRect(canvas, area, overridePaint: paint);
+      buttonSprite.renderRect(canvas, area!, overridePaint: paint);
+    super.render(canvas);
   }
 
   void setAlphaFromStatus() {
-    if (enabled)
-      paint.color = Color.fromRGBO(0, 0, 0, 1.0);
+    if (enabled!)
+      paint!.color = Color.fromRGBO(0, 0, 0, 1.0);
     else
-      paint.color = Color.fromRGBO(0, 0, 0, 0.3);
+      paint!.color = Color.fromRGBO(0, 0, 0, 0.3);
   }
 
   Rect getArea();
@@ -49,13 +47,13 @@ abstract class ButtonBase extends DeviceModuleBase {
 
   @override
   void onTapDown(double dX, double dY) {
-    pressed = area.contains(Offset(dX, dY));
+    pressed = area!.contains(Offset(dX, dY));
   }
 
   @override
   void onTapUp(double dX, double dY) {
     pressed = false;
-    if (area.contains(Offset(dX, dY))) {
+    if (area!.contains(Offset(dX, dY))) {
       onPressed();
       _onPressed?.call();
     }
